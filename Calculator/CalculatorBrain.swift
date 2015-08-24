@@ -70,12 +70,14 @@ class CalculatorBrain {
     
     func evaluate() -> Double? {
         let (result, remainder) = evaluate(opStack)
-        println("\(opStack) = \(result) with \(remainder) left over")
+//        println("\(opStack) = \(result) with \(remainder) left over")
         return result
     }
     
-    func pushOperand(operand: Double) -> Double? {
-        opStack.append(Op.Operand(operand))
+    func pushOperand(operand: Double?) -> Double? {
+        if let newOperand = operand {
+            opStack.append(Op.Operand(newOperand))
+        }
         return evaluate()
     }
     
@@ -88,5 +90,15 @@ class CalculatorBrain {
     
     func clear() {
         opStack.removeAll(keepCapacity: true)
+    }
+    
+    func undo() {
+        if opStack.count > 0 {
+            opStack.removeLast()
+        }
+    }
+    
+    func getOpStack() -> String {
+        return "\(opStack)"
     }
 }

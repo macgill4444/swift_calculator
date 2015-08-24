@@ -12,7 +12,9 @@ class ViewController: UIViewController {
 
 
     @IBOutlet weak var display: UILabel!
-
+    
+    @IBOutlet weak var operationsLabel: UILabel!
+    
     var userIsInTheMiddleOfTypingANumber = false
    
     var brain = CalculatorBrain()
@@ -39,7 +41,7 @@ class ViewController: UIViewController {
             if let result = brain.performOperation(operation) {
                 displayValue = result
             } else {
-                displayValue = 0
+                displayValue = nil
             }
         }
     }
@@ -49,19 +51,28 @@ class ViewController: UIViewController {
         if let result = brain.pushOperand(displayValue) {
             displayValue = result
         } else {
-            displayValue = 0
+            displayValue = nil
         }
     }
     
     
-    var displayValue: Double {
+    var displayValue: Double? {
         get {
-            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+            if let doubleVal =  NSNumberFormatter().numberFromString(display.text!)?.doubleValue {
+                return doubleVal
+            } else {
+                return nil
+            }
         }
         set {
             //newValue is a magic variable
-            display.text = "\(newValue)"
+            if let newDisplayVal = newValue {
+                display.text = "\(newDisplayVal)"
+            } else {
+                display.text = "error"
+            }
             userIsInTheMiddleOfTypingANumber = false
+            operationsLabel.text = brain.getOpStack()
         }
     }
     
@@ -69,6 +80,10 @@ class ViewController: UIViewController {
         userIsInTheMiddleOfTypingANumber = false
         displayValue = 0
         brain.clear()
+    }
+    
+    @IBAction func undo() {
+        brain.undo()
     }
     
 }
