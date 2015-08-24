@@ -17,6 +17,8 @@ class ViewController: UIViewController {
     
     var userIsInTheMiddleOfTypingANumber = false
    
+    var numberHasDecimalPoint = false
+    
     var brain = CalculatorBrain()
     
     //make sure with action you dont choose anyobject
@@ -48,6 +50,7 @@ class ViewController: UIViewController {
 
     @IBAction func enter() {
         userIsInTheMiddleOfTypingANumber = false
+        numberHasDecimalPoint = false
         if let result = brain.pushOperand(displayValue) {
             displayValue = result
         } else {
@@ -57,11 +60,13 @@ class ViewController: UIViewController {
     
     
     @IBAction func decimalPoint() {
-        if userIsInTheMiddleOfTypingANumber{
+        if userIsInTheMiddleOfTypingANumber && !numberHasDecimalPoint {
+            numberHasDecimalPoint = true
             display.text = display.text! + "."
-        } else {
-            display.text = "0."
+        } else if !numberHasDecimalPoint {
+            numberHasDecimalPoint = true
             userIsInTheMiddleOfTypingANumber = true
+            display.text = "0."
         }
     }
     
