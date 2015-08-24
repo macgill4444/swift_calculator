@@ -31,6 +31,8 @@ class CalculatorBrain {
 //    var opStack = Array<Op>()
     private var opStack = [Op]()
     
+    var opStackString: String
+    
 //    var knownOps = Dictionary<String, Op>()
     private var knownOps = [String:Op]()
     
@@ -40,6 +42,7 @@ class CalculatorBrain {
         knownOps["+"] = Op.BinaryOperation("+", +)
         knownOps["-"] = Op.BinaryOperation("-") { $1 - $0 }
         knownOps["√"] = Op.UnaryOperation("√", sqrt)
+        opStackString = " "
     }
     
     private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
@@ -50,16 +53,19 @@ class CalculatorBrain {
             switch op {
             case .Operand(let operand):
                 return (operand, remainingOps)
-            case .UnaryOperation(_, let operation):
+            case .UnaryOperation(let symbol, let operation):
                 let operandEvaluation = evaluate(remainingOps)
                 if let operand = operandEvaluation.result {
+                    opStackString = "\(operand)" + symbol + opStackString
                     return (operation(operand), operandEvaluation.remainingOps)
                 }
-            case .BinaryOperation(_, let operation):
+            case .BinaryOperation(let symbol, let operation):
                 let op1Evaluation = evaluate(remainingOps)
                 if let operand1 = op1Evaluation.result {
                     let op2Evaluation = evaluate(op1Evaluation.remainingOps)
                     if let operand2 = op2Evaluation.result {
+//                        opStackString = "(\(operand1)" + symbol + "\(operand2))" + opStackString
+                        opStackString = "(" + symbol + opStackString + ")"
                         return (operation(operand1, operand2), op2Evaluation.remainingOps)
                     }
                 }
@@ -90,6 +96,7 @@ class CalculatorBrain {
     
     func clear() {
         opStack.removeAll(keepCapacity: true)
+        opStackString = ""
     }
     
     func undo() {
@@ -99,6 +106,34 @@ class CalculatorBrain {
     }
     
     func getOpStack() -> String {
-        return "\(opStack)"
+        println("\(opStack)")
+        return stringifyStack(opStack).result!
     }
+    
+    private func stringifyStack(ops: [Op]) -> (result: String?, remainingOps: [Op]) {
+        
+        if !ops.isEmpty {
+            var remainingOps = ops
+            let op = remainingOps.removeLast()
+            switch op {
+            case .Operand(let operand):
+                return ("\(operand)", remainingOps)
+            case .UnaryOperation(let symbol, let operation):
+                let operandEvaluation = stringifyStack(remainingOps)
+                if let operand = operandEvaluation.result {
+                    return (symbol + "(\(operand))", operandEvaluation.remainingOps)
+                }
+            case .BinaryOperation(let symbol, let operation):
+                let op1Evaluation = stringifyStack(remainingOps)
+                if let operand1 = op1Evaluation.result {
+                    let op2Evaluation = stringifyStack(op1Evaluation.remainingOps)
+                    if let operand2 = op2Evaluation.result {
+                        return ("(\(operand1)" + symbol + "\(operand2))", op2Evaluation.remainingOps)
+                    }
+                }
+            }
+        }
+        return ("", ops)
+    }
+    
 }
