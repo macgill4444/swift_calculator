@@ -56,6 +56,15 @@ class ViewController: UIViewController {
     }
     
     
+    @IBAction func decimalPoint() {
+        if userIsInTheMiddleOfTypingANumber{
+            display.text = display.text! + "."
+        } else {
+            display.text = "0."
+            userIsInTheMiddleOfTypingANumber = true
+        }
+    }
+    
     var displayValue: Double? {
         get {
             if let doubleVal =  NSNumberFormatter().numberFromString(display.text!)?.doubleValue {
