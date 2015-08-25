@@ -46,6 +46,7 @@ class ViewController: UIViewController {
                 displayValue = nil
             }
         }
+        operationsLabel.text = brain.getOpStack()
     }
 
     @IBAction func enter() {
@@ -86,7 +87,6 @@ class ViewController: UIViewController {
                 display.text = "error"
             }
             userIsInTheMiddleOfTypingANumber = false
-            operationsLabel.text = brain.getOpStack()
         }
     }
     
@@ -94,10 +94,12 @@ class ViewController: UIViewController {
         userIsInTheMiddleOfTypingANumber = false
         displayValue = 0
         brain.clear()
+        operationsLabel.text = brain.getOpStack()
     }
     
     @IBAction func undo() {
         brain.undo()
+        operationsLabel.text = brain.getOpStack()
     }
     
 }

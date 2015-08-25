@@ -41,7 +41,11 @@ class CalculatorBrain {
         knownOps["/"] = Op.BinaryOperation("/") { $1 / $0 }
         knownOps["+"] = Op.BinaryOperation("+", +)
         knownOps["-"] = Op.BinaryOperation("-") { $1 - $0 }
+        knownOps["mod"] = Op.BinaryOperation("mod") { $1 % $0 }
         knownOps["√"] = Op.UnaryOperation("√", sqrt)
+        knownOps["sin"] = Op.UnaryOperation("sin", sin)
+        knownOps["cos"] = Op.UnaryOperation("cos", cos)
+        knownOps["π"] = Op.Operand(M_PI)
         opStackString = " "
     }
     
@@ -106,7 +110,6 @@ class CalculatorBrain {
     }
     
     func getOpStack() -> String {
-        println("\(opStack)")
         return stringifyStack(opStack).result!
     }
     
@@ -121,14 +124,14 @@ class CalculatorBrain {
             case .UnaryOperation(let symbol, let operation):
                 let operandEvaluation = stringifyStack(remainingOps)
                 if let operand = operandEvaluation.result {
-                    return (symbol + "(\(operand))", operandEvaluation.remainingOps)
+                    return (symbol + " (\(operand)) ", operandEvaluation.remainingOps)
                 }
             case .BinaryOperation(let symbol, let operation):
                 let op1Evaluation = stringifyStack(remainingOps)
                 if let operand1 = op1Evaluation.result {
                     let op2Evaluation = stringifyStack(op1Evaluation.remainingOps)
                     if let operand2 = op2Evaluation.result {
-                        return ("(\(operand1)" + symbol + "\(operand2))", op2Evaluation.remainingOps)
+                        return ("(\(operand2) " + symbol + " \(operand1))", op2Evaluation.remainingOps)
                     }
                 }
             }
