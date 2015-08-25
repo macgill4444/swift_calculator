@@ -98,8 +98,19 @@ class ViewController: UIViewController {
     }
     
     @IBAction func undo() {
-        brain.undo()
-        operationsLabel.text = brain.getOpStack()
+        if userIsInTheMiddleOfTypingANumber {
+            //remove the last character from display
+            if var text = display.text {
+                var textLength = count(text)
+                if textLength >= 2 {
+                    display.text = dropLast(text)
+                }
+            }
+            
+        } else {
+            brain.undo()
+            operationsLabel.text = brain.getOpStack()
+        }
     }
     
 }
