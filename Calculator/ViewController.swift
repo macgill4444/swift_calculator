@@ -84,7 +84,7 @@ class ViewController: UIViewController {
             if let newDisplayVal = newValue {
                 display.text = "\(newDisplayVal)"
             } else {
-                display.text = "error"
+                display.text = "nan"
             }
             userIsInTheMiddleOfTypingANumber = false
         }

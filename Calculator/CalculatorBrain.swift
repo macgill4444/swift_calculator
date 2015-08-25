@@ -110,7 +110,7 @@ class CalculatorBrain {
     }
     
     func getOpStack() -> String {
-        return stringifyStack(opStack).result!
+        return stringifyStack(opStack).result! + "="
     }
     
     private func stringifyStack(ops: [Op]) -> (result: String?, remainingOps: [Op]) {
