@@ -415,6 +415,7 @@
 				D9880B7B1B87B4F2006B5E1D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D9880B7C1B87B4F2006B5E1D /* Build configuration list for PBXNativeTarget "CalculatorTests" */ = {
 			isa = XCConfigurationList;
@@ -423,6 +424,7 @@
 				D9880B7E1B87B4F2006B5E1D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

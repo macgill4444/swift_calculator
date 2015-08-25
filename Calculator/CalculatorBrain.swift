@@ -14,6 +14,7 @@ class CalculatorBrain {
         case Operand(Double)
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, (Double, Double) -> Double)
+        case Variable(String)
         
         var description: String {
             get {
@@ -24,17 +25,21 @@ class CalculatorBrain {
                     return symbol
                 case .BinaryOperation(let symbol, _):
                     return symbol
+                case .Variable(let variable):
+                    return variable + "\(variable)"
                 }
             }
         }
     }
-//    var opStack = Array<Op>()
     private var opStack = [Op]()
     
     var opStackString: String
     
+    
 //    var knownOps = Dictionary<String, Op>()
     private var knownOps = [String:Op]()
+
+    var variableValues = [String:Double]()
     
     init() {
         knownOps["x"] = Op.BinaryOperation("x", *)
@@ -57,6 +62,8 @@ class CalculatorBrain {
             switch op {
             case .Operand(let operand):
                 return (operand, remainingOps)
+            case .Variable(let variable):
+                return (variableValues[variable], remainingOps)
             case .UnaryOperation(let symbol, let operation):
                 let operandEvaluation = evaluate(remainingOps)
                 if let operand = operandEvaluation.result {
@@ -91,6 +98,11 @@ class CalculatorBrain {
         return evaluate()
     }
     
+    func pushOperand(variable: String) -> Double? {
+            opStack.append(Op.Variable(variable))
+            return evaluate()
+    }
+    
     func performOperation(symbol: String) -> Double? {
         if let operation = knownOps[symbol] {
             opStack.append(operation)
@@ -113,6 +125,8 @@ class CalculatorBrain {
         return stringifyStack(opStack).result! + "="
     }
     
+    
+    
     private func stringifyStack(ops: [Op]) -> (result: String?, remainingOps: [Op]) {
         
         if !ops.isEmpty {
@@ -121,6 +135,8 @@ class CalculatorBrain {
             switch op {
             case .Operand(let operand):
                 return ("\(operand)", remainingOps)
+            case .Variable(let variable):
+                return (variable, remainingOps)
             case .UnaryOperation(let symbol, let operation):
                 let operandEvaluation = stringifyStack(remainingOps)
                 if let operand = operandEvaluation.result {

@@ -49,6 +49,27 @@ class ViewController: UIViewController {
         operationsLabel.text = brain.getOpStack()
     }
 
+    @IBAction func pushVariableOntoStack() {
+        userIsInTheMiddleOfTypingANumber = false
+        numberHasDecimalPoint = false
+        if let result = brain.pushOperand("M") {
+            displayValue = result
+        } else {
+            displayValue = nil
+        }
+    }
+    
+    @IBAction func setVariable() {
+        userIsInTheMiddleOfTypingANumber = false
+        numberHasDecimalPoint = false
+        if let newVarVal = displayValue {
+            brain.variableValues["M"] = newVarVal
+            if let newDisplayValue = brain.evaluate() {
+                displayValue = newDisplayValue
+            }
+        }
+    }
+   
     @IBAction func enter() {
         userIsInTheMiddleOfTypingANumber = false
         numberHasDecimalPoint = false
