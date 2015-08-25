@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var operationsLabel: UILabel!
     
+    @IBOutlet weak var variableButton: UIButton!
+    
     var userIsInTheMiddleOfTypingANumber = false
    
     var numberHasDecimalPoint = false
@@ -78,6 +80,7 @@ class ViewController: UIViewController {
         } else {
             displayValue = nil
         }
+        operationsLabel.text = brain.getOpStack()        
     }
     
     
@@ -125,12 +128,17 @@ class ViewController: UIViewController {
                 var textLength = count(text)
                 if textLength >= 2 {
                     display.text = dropLast(text)
+                } else if textLength == 1 {
+                    display.text = " "
                 }
             }
             
         } else {
             brain.undo()
             operationsLabel.text = brain.getOpStack()
+            if let newDisplayValue = brain.evaluate() {
+                displayValue = newDisplayValue
+            }
         }
     }
     
