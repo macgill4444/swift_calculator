@@ -31,6 +31,7 @@ class CalculatorBrain {
             }
         }
     }
+    
     private var opStack = [Op]()
     
     var opStackString: String
@@ -52,10 +53,36 @@ class CalculatorBrain {
         knownOps["cos"] = Op.UnaryOperation("cos", cos)
         knownOps["π"] = Op.Operand(M_PI)
         opStackString = " "
+        let defaults = NSUserDefaults.standardUserDefaults()
+        if let savedStack = defaults.arrayForKey("savedOpStack") {
+            program = savedStack
+            println("pulled this stack from memory \(savedStack)")
+        }
+    }
+    
+    
+    typealias PropertyList = AnyObject
+    var program:  PropertyList { //guaranteed to be a PropertyLis
+        get {
+            return opStack.map { $0.description }
+        }
+        set {
+            if let opSymbols = newValue as? Array<String> {
+                var newOpStack = [Op]()
+                for obSymbol in opSymbols {
+                    if let op = knownOps[obSymbol] {
+                        newOpStack.append(op)
+                    } else if let operand = NSNumberFormatter().numberFromString(obSymbol)?.doubleValue {
+                        newOpStack.append(.Operand(operand))
+                    }
+                }
+                // need to figure out about variables --> they do not get saved right now
+                opStack = newOpStack
+            }
+        }
     }
     
     private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
-        
         if !ops.isEmpty {
             var remainingOps = ops
             let op = remainingOps.removeLast()
@@ -88,6 +115,11 @@ class CalculatorBrain {
     func evaluate() -> Double? {
         let (result, remainder) = evaluate(opStack)
 //        println("\(opStack) = \(result) with \(remainder) left over")
+        
+        // save the opstack in program var
+        saveOpStack()
+        
+        
         return result
     }
     
@@ -125,10 +157,16 @@ class CalculatorBrain {
         return stringifyStack(opStack).result! + "="
     }
     
+    func saveOpStack() {
+        let defaults = NSUserDefaults.standardUserDefaults()
+        defaults.setObject(program, forKey: "savedOpStack")
+        defaults.synchronize()
+    }
+
     
     
+    //need to clean this up - not working perfectly yet
     private func stringifyStack(ops: [Op]) -> (result: String?, remainingOps: [Op]) {
-        
         if !ops.isEmpty {
             var remainingOps = ops
             let op = remainingOps.removeLast()

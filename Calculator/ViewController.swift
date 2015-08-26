@@ -118,6 +118,7 @@ class ViewController: UIViewController {
         userIsInTheMiddleOfTypingANumber = false
         displayValue = 0
         brain.clear()
+        brain.variableValues["M"] = nil
         operationsLabel.text = brain.getOpStack()
     }
     
