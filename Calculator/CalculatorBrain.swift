@@ -56,7 +56,7 @@ class CalculatorBrain {
         let defaults = NSUserDefaults.standardUserDefaults()
         if let savedStack = defaults.arrayForKey("savedOpStack") {
             program = savedStack
-            println("pulled this stack from memory \(savedStack)")
+//            println("pulled this stack from memory \(savedStack)")
         }
     }
     
